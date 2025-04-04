@@ -169,19 +169,17 @@ export function PartnerTable() {
         id: "clicks",
         header: "Clicks",
         accessorFn: (d) =>
-          d.status !== "pending" ? nFormatter(d.clicks, { full: true }) : "-",
+          d.status !== "pending" ? nFormatter(d.clicks) : "-",
       },
       {
         id: "leads",
         header: "Leads",
-        accessorFn: (d) =>
-          d.status !== "pending" ? nFormatter(d.leads, { full: true }) : "-",
+        accessorFn: (d) => (d.status !== "pending" ? nFormatter(d.leads) : "-"),
       },
       {
         id: "sales",
         header: "Sales",
-        accessorFn: (d) =>
-          d.status !== "pending" ? nFormatter(d.sales, { full: true }) : "-",
+        accessorFn: (d) => (d.status !== "pending" ? nFormatter(d.sales) : "-"),
       },
       {
         id: "saleAmount",
@@ -373,9 +371,7 @@ function RowMenuButton({
     deleteProgramInviteAction,
     {
       onSuccess: async () => {
-        mutatePrefix(
-          `/api/partners?workspaceId=${workspaceId}&programId=${programId}`,
-        );
+        await mutatePrefix("/api/partners");
 
         toast.success("Deleted the partner invite.");
         setIsOpen(false);

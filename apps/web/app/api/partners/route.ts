@@ -31,6 +31,7 @@ export const GET = withWorkspace(
       ...partnersQuerySchema.parse(searchParams),
       workspaceId: workspace.id,
       programId,
+      includeExpandedFields: includeExpandedFields === "true",
     });
 
     return NextResponse.json(
@@ -107,13 +108,6 @@ export const POST = withWorkspace(
     });
   },
   {
-    requiredPlan: [
-      "business",
-      "business extra",
-      "business max",
-      "business plus",
-      "advanced",
-      "enterprise",
-    ],
+    requiredPlan: ["advanced", "enterprise"],
   },
 );
