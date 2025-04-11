@@ -1,6 +1,6 @@
 import useProgramMetrics from "@/lib/swr/use-program-metrics";
 import { Icon } from "@dub/ui";
-import { Check2, CurrencyDollar, MoneyBills2, Users } from "@dub/ui/icons";
+import { Check2, CircleDollar, MoneyBills2, Users } from "@dub/ui/icons";
 import NumberFlow from "@number-flow/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -9,7 +9,7 @@ export function ProgramMetrics() {
   const { metrics, error } = useProgramMetrics();
 
   return (
-    <div className="grid grid-cols-1 divide-neutral-200 rounded-lg border border-neutral-200 max-md:divide-y md:grid-cols-4 md:divide-x">
+    <div className="grid grid-cols-1 divide-neutral-200 overflow-hidden rounded-lg border border-neutral-200 max-md:divide-y md:grid-cols-4 md:divide-x">
       <Stat
         icon={Users}
         label="Partners"
@@ -21,13 +21,13 @@ export function ProgramMetrics() {
         icon={Check2}
         label="Sales"
         tab="sales"
-        value={metrics?.salesCount}
+        value={metrics?.commissionsCount}
         error={error}
       />
       <Stat
-        icon={CurrencyDollar}
-        label="Revenue"
-        value={metrics?.revenue}
+        icon={CircleDollar}
+        label="Commissions"
+        value={metrics?.commissions}
         tab="sales"
         error={error}
         isCurrency

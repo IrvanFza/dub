@@ -8,7 +8,7 @@ import { usePartnerEarningsTimeseries } from "@/lib/swr/use-partner-earnings-tim
 import usePartnerLinks from "@/lib/swr/use-partner-links";
 import { LinkIcon } from "@/ui/links/link-icon";
 import { CommissionTypeIcon } from "@/ui/partners/comission-type-icon";
-import { SaleStatusBadges } from "@/ui/partners/sale-status-badges";
+import { CommissionStatusBadges } from "@/ui/partners/commission-status-badges";
 import SimpleDateRangePicker from "@/ui/shared/simple-date-range-picker";
 import { Filter, LoadingSpinner, ToggleGroup, useRouterStuff } from "@dub/ui";
 import { Areas, TimeSeriesChart, XAxis, YAxis } from "@dub/ui/charts";
@@ -22,6 +22,7 @@ import {
   nFormatter,
 } from "@dub/utils";
 import NumberFlow from "@number-flow/react";
+import { endOfDay, startOfDay } from "date-fns";
 import { Fragment, useMemo, useState } from "react";
 
 const LINE_COLORS = [
@@ -61,8 +62,8 @@ export function EarningsCompositeChart() {
   const { data } = usePartnerEarningsTimeseries({
     interval,
     groupBy,
-    start: start ? new Date(start) : undefined,
-    end: end ? new Date(end) : undefined,
+    start: start ? startOfDay(new Date(start)) : undefined,
+    end: end ? endOfDay(new Date(end)) : undefined,
   });
 
   const total = useMemo(
@@ -160,7 +161,7 @@ export function EarningsCompositeChart() {
           />
         </div>
         <div className="mt-5 h-80">
-          {chartData ? (
+          {chartData && chartData.length > 0 ? (
             <TimeSeriesChart
               data={chartData}
               series={series}
@@ -316,14 +317,14 @@ function EarningsTableControls() {
         icon: CircleDotted,
         label: "Status",
         options: statuses?.map(({ status, _count }) => {
-          const Icon = SaleStatusBadges[status].icon;
+          const Icon = CommissionStatusBadges[status].icon;
           return {
             value: status,
-            label: SaleStatusBadges[status].label,
+            label: CommissionStatusBadges[status].label,
             icon: (
               <Icon
                 className={cn(
-                  SaleStatusBadges[status].className,
+                  CommissionStatusBadges[status].className,
                   "size-4 bg-transparent",
                 )}
               />

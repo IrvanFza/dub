@@ -66,9 +66,9 @@ export const PUT = withWorkspace(
 
     const link = await prisma.link.findFirst({
       where: {
-        projectId: workspace.id,
         programId,
         partnerId,
+        projectId: workspace.id,
         url,
       },
       include: includeTags,
@@ -85,6 +85,15 @@ export const PUT = withWorkspace(
             ? link.expiresAt.toISOString()
             : link.expiresAt,
         geo: link.geo as NewLinkProps["geo"],
+        testVariants: link.testVariants as NewLinkProps["testVariants"],
+        testCompletedAt:
+          link.testCompletedAt instanceof Date
+            ? link.testCompletedAt.toISOString()
+            : link.testCompletedAt,
+        testStartedAt:
+          link.testStartedAt instanceof Date
+            ? link.testStartedAt.toISOString()
+            : link.testStartedAt,
         // merge in new props
         ...linkProps,
         // set default fields
@@ -207,5 +216,6 @@ export const PUT = withWorkspace(
   },
   {
     requiredPermissions: ["links.write"],
+    requiredPlan: ["advanced", "enterprise"],
   },
 );

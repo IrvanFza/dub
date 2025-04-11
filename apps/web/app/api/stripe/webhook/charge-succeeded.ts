@@ -16,16 +16,17 @@ export async function chargeSucceeded(event: Stripe.Event) {
 
   console.log({ chargeId, receipt_url, transfer_group });
 
-  const invoice = await prisma.invoice.update({
+  const invoice = await prisma.invoice.findUnique({
     where: {
       id: transfer_group,
     },
-    data: {
-      status: "completed",
-      receiptUrl: receipt_url,
-    },
     include: {
       payouts: {
+        where: {
+          status: {
+            not: "completed",
+          },
+        },
         include: {
           program: true,
           partner: true,
@@ -36,6 +37,16 @@ export async function chargeSucceeded(event: Stripe.Event) {
 
   if (!invoice) {
     console.log(`Invoice with transfer group ${transfer_group} not found.`);
+    return;
+  }
+
+  if (invoice.status === "completed") {
+    console.log("Invoice already completed, skipping...");
+    return;
+  }
+
+  if (invoice.payouts.length === 0) {
+    console.log("No payouts found with status not completed, skipping...");
     return;
   }
 
@@ -56,26 +67,23 @@ export async function chargeSucceeded(event: Stripe.Event) {
     console.log("Transfer created", transfer);
 
     await Promise.all([
-      prisma.$transaction(async (tx) => {
-        await tx.payout.update({
-          where: {
-            id: payout.id,
-          },
-          data: {
-            stripeTransferId: transfer.id,
-            status: "completed",
-            paidAt: new Date(),
-          },
-        });
-
-        await tx.commission.updateMany({
-          where: {
-            payoutId: payout.id,
-          },
-          data: {
-            status: "paid",
-          },
-        });
+      prisma.payout.update({
+        where: {
+          id: payout.id,
+        },
+        data: {
+          stripeTransferId: transfer.id,
+          status: "completed",
+          paidAt: new Date(),
+        },
+      }),
+      prisma.commission.updateMany({
+        where: {
+          payoutId: payout.id,
+        },
+        data: {
+          status: "paid",
+        },
       }),
       payout.partner.email &&
         sendEmail({
@@ -92,7 +100,19 @@ export async function chargeSucceeded(event: Stripe.Event) {
               endDate: payout.periodEnd,
             },
           }),
+          variant: "notifications",
         }),
     ]);
   }
+
+  await prisma.invoice.update({
+    where: {
+      id: invoice.id,
+    },
+    data: {
+      status: "completed",
+      receiptUrl: receipt_url,
+      paidAt: new Date(),
+    },
+  });
 }

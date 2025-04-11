@@ -23,7 +23,7 @@ import { cn } from "@dub/utils/src";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
-import { Dispatch, memo, SetStateAction, useMemo, useState } from "react";
+import { Dispatch, memo, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -116,10 +116,6 @@ function InvitePartnerSheetContent({ setIsOpen }: InvitePartnerSheetProps) {
     });
   };
 
-  const salesRewards = useMemo(() => {
-    return rewards?.filter((reward) => reward.event === "sale");
-  }, [rewards, program?.defaultRewardId]);
-
   const buttonDisabled =
     isPending ||
     !!errors.name ||
@@ -146,7 +142,7 @@ function InvitePartnerSheetContent({ setIsOpen }: InvitePartnerSheetProps) {
 
       <div className="flex-1 overflow-y-auto">
         <div className="p-6">
-          <div className="grid gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <div>
               <label htmlFor="name" className="flex items-center space-x-2">
                 <h2 className="text-sm font-medium text-neutral-900">Name</h2>
@@ -243,7 +239,7 @@ function InvitePartnerSheetContent({ setIsOpen }: InvitePartnerSheetProps) {
 
               <AnimatedSizeContainer height>
                 {showAdvancedOptions && (
-                  <div className="grid gap-6 py-6">
+                  <div className="grid grid-cols-1 gap-6 py-6">
                     <div>
                       <label
                         htmlFor="rewardId"
@@ -265,7 +261,7 @@ function InvitePartnerSheetContent({ setIsOpen }: InvitePartnerSheetProps) {
                           disabled={rewardsLoading}
                         >
                           <option value="">Select a reward</option>
-                          {salesRewards?.map((reward) => (
+                          {rewards?.map((reward) => (
                             <option value={reward.id} key={reward.id}>
                               {reward.name ||
                                 formatRewardDescription({ reward })}
@@ -370,7 +366,7 @@ function EmailPreview() {
         className="overflow-hidden"
       >
         <div className="mt-2 overflow-hidden rounded-md border border-neutral-200 bg-white">
-          <div className="grid gap-4 p-6 pb-10">
+          <div className="grid grid-cols-1 gap-4 p-6 pb-10">
             <MemoBlurImage
               src={program?.logo || "https://assets.dub.co/logo.png"}
               alt={program?.name || "Dub"}

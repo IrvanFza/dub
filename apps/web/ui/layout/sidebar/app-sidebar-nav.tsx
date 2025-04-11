@@ -1,6 +1,5 @@
 "use client";
 
-import { SHOW_EMBEEDED_REFERRALS } from "@/lib/embed/constants";
 import usePrograms from "@/lib/swr/use-programs";
 import { useRouterStuff } from "@dub/ui";
 import {
@@ -50,8 +49,7 @@ const NAV_AREAS: SidebarNavAreas<{
           {
             name: "Links",
             icon: Hyperlink,
-            href: `/${slug}${pathname === `/${slug}` ? "" : queryString}`,
-            exact: true,
+            href: `/${slug}/links${pathname === `/${slug}/links` ? "" : queryString}`,
           },
           {
             name: "Analytics",
@@ -90,8 +88,8 @@ const NAV_AREAS: SidebarNavAreas<{
                       href: `/${slug}/programs/${programs[0].id}/partners`,
                     },
                     {
-                      name: "Sales",
-                      href: `/${slug}/programs/${programs[0].id}/sales`,
+                      name: "Commissions",
+                      href: `/${slug}/programs/${programs[0].id}/commissions`,
                     },
                     {
                       name: "Payouts",
@@ -217,15 +215,11 @@ const NAV_AREAS: SidebarNavAreas<{
             icon: ShieldCheck,
             href: "/account/settings/security",
           },
-          ...(SHOW_EMBEEDED_REFERRALS
-            ? [
-                {
-                  name: "Referrals",
-                  icon: Gift,
-                  href: "/account/settings/referrals",
-                },
-              ]
-            : []),
+          {
+            name: "Referrals",
+            icon: Gift,
+            href: "/account/settings/referrals",
+          },
         ],
       },
     ],
