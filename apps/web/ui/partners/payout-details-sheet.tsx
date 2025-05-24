@@ -37,10 +37,7 @@ type PayoutDetailsSheetProps = {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-function PayoutDetailsSheetContent({
-  payout,
-  setIsOpen,
-}: PayoutDetailsSheetProps) {
+function PayoutDetailsSheetContent({ payout }: PayoutDetailsSheetProps) {
   const { id: workspaceId, slug } = useWorkspace();
   const { programId } = useParams() as { programId: string };
 
@@ -49,7 +46,12 @@ function PayoutDetailsSheetContent({
     isLoading,
     error,
   } = useSWR<CommissionResponse[]>(
-    `/api/programs/${programId}/commissions?workspaceId=${workspaceId}&payoutId=${payout.id}&interval=all&pageSize=${PAYOUTS_SHEET_ITEMS_LIMIT}`,
+    `/api/commissions?${new URLSearchParams({
+      workspaceId: workspaceId!,
+      payoutId: payout.id,
+      interval: "all",
+      pageSize: PAYOUTS_SHEET_ITEMS_LIMIT.toString(),
+    })}`,
     fetcher,
   );
 

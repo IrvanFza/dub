@@ -1,5 +1,4 @@
 import z from "@/lib/zod";
-import { metaTagsSchema } from "@/lib/zod/schemas/metatags";
 import {
   PartnerEarningsSchema,
   PartnerProfileCustomerSchema,
@@ -54,6 +53,7 @@ import {
   PayoutResponseSchema,
   PayoutSchema,
 } from "./zod/schemas/payouts";
+import { programLanderSchema } from "./zod/schemas/program-lander";
 import { programDataSchema } from "./zod/schemas/program-onboarding";
 import {
   PartnerProgramInviteSchema,
@@ -62,6 +62,7 @@ import {
   ProgramMetricsSchema,
   ProgramPartnerLinkSchema,
   ProgramSchema,
+  ProgramWithLanderDataSchema,
 } from "./zod/schemas/programs";
 import { RewardSchema } from "./zod/schemas/rewards";
 import {
@@ -85,6 +86,7 @@ export interface ExpandedLinkProps extends LinkProps {
   tags: TagProps[];
   webhookIds: string[];
   dashboardId: string | null;
+  user?: UserProps;
 }
 
 export interface SimpleLinkProps {
@@ -139,7 +141,7 @@ export type PlanProps = (typeof plans)[number];
 
 export type RoleProps = (typeof roles)[number];
 
-export type BetaFeatures = "noDubLink" | "linkFolders" | "abTesting";
+export type BetaFeatures = "noDubLink" | "abTesting";
 
 export interface WorkspaceProps extends Project {
   logo: string | null;
@@ -161,6 +163,7 @@ export interface WorkspaceProps extends Project {
 }
 
 export type ExpandedWorkspaceProps = WorkspaceProps & {
+  defaultProgramId: string | null;
   allowedHostnames: string[];
   users: (WorkspaceProps["users"][number] & {
     workspacePreferences?: z.infer<typeof workspacePreferencesSchema>;
@@ -277,8 +280,6 @@ export const tagColors = [
 ] as const;
 
 export type DashboardProps = z.infer<typeof dashboardSchema>;
-
-export type MetaTag = z.infer<typeof metaTagsSchema>;
 
 export type TokenProps = z.infer<typeof tokenSchema>;
 
@@ -403,6 +404,12 @@ export type DiscountProps = z.infer<typeof DiscountSchema>;
 
 export type ProgramProps = z.infer<typeof ProgramSchema>;
 
+export type ProgramLanderData = z.infer<typeof programLanderSchema>;
+
+export type ProgramWithLanderDataProps = z.infer<
+  typeof ProgramWithLanderDataSchema
+>;
+
 export type ProgramInviteProps = z.infer<typeof ProgramInviteSchema>;
 
 export type PartnerProgramInviteProps = z.infer<
@@ -469,3 +476,5 @@ export type CreatePartnerProps = z.infer<typeof createPartnerSchema>;
 export type ProgramData = z.infer<typeof programDataSchema>;
 
 export type ProgramMetrics = z.infer<typeof ProgramMetricsSchema>;
+
+export type PayoutMethod = "stripe" | "paypal";
