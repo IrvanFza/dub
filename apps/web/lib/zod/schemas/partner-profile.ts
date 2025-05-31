@@ -1,8 +1,9 @@
 import {
+  DATE_RANGE_INTERVAL_PRESETS,
   DUB_PARTNERS_ANALYTICS_INTERVAL,
-  intervals,
 } from "@/lib/analytics/constants";
 import { z } from "zod";
+import { analyticsQuerySchema, eventsQuerySchema } from "./analytics";
 import {
   CommissionSchema,
   getCommissionsCountQuerySchema,
@@ -39,7 +40,9 @@ export const getPartnerEarningsQuerySchema = getCommissionsQuerySchema
   })
   .merge(
     z.object({
-      interval: z.enum(intervals).default(DUB_PARTNERS_ANALYTICS_INTERVAL),
+      interval: z
+        .enum(DATE_RANGE_INTERVAL_PRESETS)
+        .default(DUB_PARTNERS_ANALYTICS_INTERVAL),
       type: z.enum(["click", "lead", "sale"]).optional(),
       linkId: z.string().optional(),
       sortBy: z.enum(["createdAt", "amount", "earnings"]).default("createdAt"),
@@ -52,7 +55,9 @@ export const getPartnerEarningsCountQuerySchema = getCommissionsCountQuerySchema
   })
   .merge(
     z.object({
-      interval: z.enum(intervals).default(DUB_PARTNERS_ANALYTICS_INTERVAL),
+      interval: z
+        .enum(DATE_RANGE_INTERVAL_PRESETS)
+        .default(DUB_PARTNERS_ANALYTICS_INTERVAL),
       type: z.enum(["click", "lead", "sale"]).optional(),
       linkId: z.string().optional(),
       groupBy: z.enum(["linkId", "customerId", "status", "type"]).optional(),
@@ -88,4 +93,26 @@ export const PartnerProfileCustomerSchema = CustomerEnrichedSchema.pick({
     .string()
     .transform((email) => email.replace(/(?<=^.).+(?=.@)/, "****")),
   activity: customerActivityResponseSchema,
+});
+
+export const partnerProfileAnalyticsQuerySchema = analyticsQuerySchema.omit({
+  workspaceId: true,
+  externalId: true,
+  tenantId: true,
+  programId: true,
+  partnerId: true,
+  tagId: true,
+  tagIds: true,
+  folderId: true,
+});
+
+export const partnerProfileEventsQuerySchema = eventsQuerySchema.omit({
+  workspaceId: true,
+  externalId: true,
+  tenantId: true,
+  programId: true,
+  partnerId: true,
+  tagId: true,
+  tagIds: true,
+  folderId: true,
 });
