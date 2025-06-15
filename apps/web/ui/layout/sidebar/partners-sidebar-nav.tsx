@@ -16,12 +16,13 @@ import {
 import { Store } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 import { ReactNode, useMemo } from "react";
+import { CursorRays } from "./icons/cursor-rays";
 import { Hyperlink } from "./icons/hyperlink";
 import { LinesY } from "./icons/lines-y";
 import { PartnerProgramDropdown } from "./partner-program-dropdown";
 import { PayoutStats } from "./payout-stats";
 import { ProgramHelpSupport } from "./program-help-support";
-import { SidebarNav, SidebarNavAreas } from "./sidebar-nav";
+import { SidebarNavAreas, SidebarNavOld } from "./sidebar-nav-old";
 
 const NAV_AREAS: SidebarNavAreas<{
   programSlug?: string;
@@ -80,6 +81,11 @@ const NAV_AREAS: SidebarNavAreas<{
             name: "Analytics",
             icon: LinesY,
             href: `/programs/${programSlug}/analytics`,
+          },
+          {
+            name: "Events",
+            icon: CursorRays,
+            href: `/programs/${programSlug}/events`,
           },
           {
             name: "Resources",
@@ -172,7 +178,7 @@ export function PartnersSidebarNav({
   }, [pathname, programSlug, isEnrolledProgramPage]);
 
   return (
-    <SidebarNav
+    <SidebarNavOld
       areas={NAV_AREAS}
       currentArea={currentArea}
       data={{
